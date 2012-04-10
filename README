@@ -1,0 +1,16 @@
+Advanced ChibiOS Project Template
+===========
+:Author:    Matthias Blaicher
+:Email:     <matthias@blaicher.com>
+
+
+== Intoduction
+This project is meant to be a versatile framework to develop rich STM32
+applications based on the ChibiOS RTOS.
+
+It is specifically designed to run on the STM32P107 board by Olimex but will
+also on othe hardware.
+
+It specifically requires:
+- Ethernet for communication
+- SD Card for configuration saving

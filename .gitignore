@@ -1,0 +1,9 @@
+src/build
+src/.dep
+
+# Kate stupid backup files
+*~
+
+# Eclipse project
+src/.cproject
+src/.project

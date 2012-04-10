@@ -1,0 +1,6 @@
+[submodule "src/Externals/ChibiOS"]
+	path = src/Externals/ChibiOS
+	url = https://github.com/mabl/ChibiOS.git
+[submodule "src/Externals/lwip"]
+	path = src/Externals/lwip
+	url = git://git.savannah.nongnu.org/lwip.git
