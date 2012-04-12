@@ -26,6 +26,8 @@
 
 #include "web/web.h"
 
+#include "Framework/Notifications/notifier.hpp"
+
 /*
  * Green LED blinker thread, times are in milliseconds.
  */
@@ -35,6 +37,7 @@ static msg_t Thread1(void *arg) {
   (void)arg;
   chRegSetThreadName("blinker");
   while (TRUE) {
+
     palClearPad(GPIOC, GPIOC_LED_STATUS1);
     chThdSleepMilliseconds(500);
     palSetPad(GPIOC, GPIOC_LED_STATUS1);
@@ -78,6 +81,27 @@ int main(void) {
    */
   chThdCreateStatic(wa_http_server, sizeof(wa_http_server), NORMALPRIO + 1,
                     http_server, NULL);
+
+
+  StaticNotifier<int, 3> notifier;
+  StaticListener<int, 2> listener;
+
+  notifier.registerListener(listener);
+
+  int a = 123;
+  notifier.broadcast(a);
+
+  a = 321;
+  notifier.broadcast(a);
+
+  volatile int b;
+  b = *listener.getData();
+  listener.releaseData();
+
+  b = *listener.getData();
+  listener.releaseData();
+
+  notifier.unregisterListener(listener);
 
   /*
    * Normal main() thread activity, in this demo it does nothing except
