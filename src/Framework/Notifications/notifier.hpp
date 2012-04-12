@@ -148,7 +148,7 @@ private:
 
 
 /**
- * @brief A @p Listener object receives messages from all @p Notifier objects
+ * @brief A @p Listener object receives messages from the @p Notifier object
  *        which it has been registered to.
  *
  * @details
