@@ -83,8 +83,8 @@ int main(void) {
                     http_server, NULL);
 
 
-  StaticNotifier<int, 3> notifier;
-  StaticListener<int, 2> listener;
+  fwk::StaticNotifier<int, 3> notifier;
+  fwk::StaticListener<int, 2> listener;
 
   notifier.registerListener(listener);
 

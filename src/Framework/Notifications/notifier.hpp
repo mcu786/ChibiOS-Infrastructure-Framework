@@ -13,6 +13,8 @@
 
 #include "Utilities/singleLinkedList.hpp"
 
+namespace fwk {
+
 template<class MsgType>
 class Listener;
 
@@ -230,6 +232,7 @@ private:
   msg_t buffer[N] __attribute__((aligned(sizeof(stkalign_t))));
 };
 
+}
 
 // Include implementation
 #include "Framework/Notifications/notifier_imp.hpp"
