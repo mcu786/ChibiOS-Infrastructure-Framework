@@ -5,12 +5,8 @@ Advanced ChibiOS Project Template
 
 
 == Intoduction
-This project is meant to be a versatile framework to develop rich STM32
-applications based on the ChibiOS RTOS.
+This project is meant to be a versatile LGPL licened framework to develop rich 
+STM32 applications based on the ChibiOS RTOS.
 
 It is specifically designed to run on the STM32P107 board by Olimex but will
-also on othe hardware.
-
-It specifically requires:
-- Ethernet for communication
-- SD Card for configuration saving
+also run on other hardware supported by ChibiOS.
