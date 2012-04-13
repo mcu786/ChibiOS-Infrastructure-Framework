@@ -28,22 +28,8 @@
 
 #include "Framework/Notifications/notifier.hpp"
 
-/*
- * Green LED blinker thread, times are in milliseconds.
- */
-static WORKING_AREA(waThread1, 128);
-static msg_t Thread1(void *arg) {
+#include "Modules/BlinkingLight/blinkingLight.hpp"
 
-  (void)arg;
-  chRegSetThreadName("blinker");
-  while (TRUE) {
-
-    palClearPad(GPIOC, GPIOC_LED_STATUS1);
-    chThdSleepMilliseconds(500);
-    palSetPad(GPIOC, GPIOC_LED_STATUS1);
-    chThdSleepMilliseconds(500);
-  }
-}
 
 /*
  * Application entry point.
@@ -66,11 +52,6 @@ int main(void) {
   sdStart(&SD3, NULL);
 
   /*
-   * Creates the blinker thread.
-   */
-  chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
-
-  /*
    * Creates the LWIP threads (it changes priority internally).
    */
   chThdCreateStatic(wa_lwip_thread, LWIP_THREAD_STACK_SIZE, NORMALPRIO + 1,
@@ -83,6 +64,19 @@ int main(void) {
                     http_server, NULL);
 
 
+  /*
+   * Start and initialize Modules
+   *
+   * TODO: Move module init to a specific place and make it more generic
+   * TODO: Also check returned error codes
+   */
+
+  VMODULE_GET_MODULE_REF(BlinkingLight).init();
+  VMODULE_GET_MODULE_REF(BlinkingLight).start();
+
+  /*
+   * Some basic testing of notifiers.
+   */
   fwk::StaticNotifier<int, 3> notifier;
   fwk::StaticListener<int, 2> listener;
 
@@ -94,7 +88,7 @@ int main(void) {
   a = 321;
   notifier.broadcast(a);
 
-  volatile int b;
+  int b;
   b = *listener.getData();
   listener.releaseData();
 
