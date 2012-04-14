@@ -6,5 +6,7 @@ doc/
 *~
 
 # Eclipse project
+.cproject
+.project
 src/.cproject
 src/.project
