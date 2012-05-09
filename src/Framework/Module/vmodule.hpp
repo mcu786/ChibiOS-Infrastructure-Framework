@@ -92,6 +92,12 @@ template<int WASize>
 msg_t fwk::VModuleThread<WASize>::start() {
   this->Start(prio);
 
+  // Name thread as module if it not yet has a name
+  chSysLock();
+  if (!this->thread_ref->p_name)
+    this->thread_ref->p_name = "unamed_module";
+  chSysUnlock();
+
   return RDY_OK;
 }
 
