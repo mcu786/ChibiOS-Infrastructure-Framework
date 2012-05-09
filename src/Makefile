@@ -82,7 +82,7 @@ CSRC = $(PORTSRC) \
        $(LWSRC) \
        $(CHIBIOS)/os/various/evtimer.c \
        $(CHIBIOS)/os/various/mail.c \
-       Main/web/web.c Utilities/Stubs/stubs.c
+       Utilities/Stubs/stubs.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

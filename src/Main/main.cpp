@@ -24,11 +24,10 @@
 
 #include "lwipthread.h"
 
-#include "web/web.h"
-
 #include "Framework/Notifications/notifier.hpp"
 
 #include "Modules/BlinkingLight/blinkingLight.hpp"
+#include "Modules/SimpleWebserver/simpleWebserver.hpp"
 
 
 /*
@@ -58,18 +57,14 @@ int main(void) {
                     lwip_thread, NULL);
 
   /*
-   * Creates the HTTP thread (it changes priority internally).
-   */
-  chThdCreateStatic(wa_http_server, sizeof(wa_http_server), NORMALPRIO + 1,
-                    http_server, NULL);
-
-
-  /*
    * Start and initialize Modules
    *
    * TODO: Move module init to a specific place and make it more generic
    * TODO: Also check returned error codes
    */
+
+  VMODULE_GET_MODULE_REF(SimpleWebserver).init();
+  VMODULE_GET_MODULE_REF(SimpleWebserver).start();
 
   VMODULE_GET_MODULE_REF(BlinkingLight).init();
   VMODULE_GET_MODULE_REF(BlinkingLight).start();
