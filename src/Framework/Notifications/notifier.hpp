@@ -87,8 +87,7 @@ public:
    * @brief Constructor which requires a pointer to the memory provided
    *        for the memory pool.
    *
-   * @param poolBuffer  Pointer to array of elements of the size of
-   *                    MEM_ALIGN_NEXT(sizeof(NotifierMsg<MsgType>)).
+   * @param poolBuffer  Pointer to array of elements.
    * @param n           Number of elements available in the @p poolBuffer.
    */
   Notifier(void* poolBuffer, size_t n);
@@ -144,8 +143,7 @@ public:
 
 private:
   /** @brief Memory pool for mailbox */
-  uint8_t buffer[N*MEM_ALIGN_NEXT(sizeof(NotifierMsg<MsgType>))]
-                              __attribute__((aligned(sizeof(stkalign_t))));
+  NotifierMsg<MsgType> buffer[N];
 };
 
 

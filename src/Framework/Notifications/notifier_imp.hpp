@@ -87,7 +87,6 @@ msg_t Notifier<MsgType>::broadcast(const MsgType& msg){
     }
     chSysUnlock()
 
-    chSchRescheduleS();
   }
 
   return errorState;
@@ -125,7 +124,7 @@ const MsgType* Listener<MsgType>::getData(){
 
 template <class MsgType>
 void Listener<MsgType>::releaseData(){
-  chDbgAssert(!lastMsg, "Listener<MsgType>::releaseData", "No msg to free");
+  chDbgAssert(lastMsg, "Listener<MsgType>::releaseData", "No msg to free");
 
   lastMsg->tryFree();
   lastMsg = 0;
