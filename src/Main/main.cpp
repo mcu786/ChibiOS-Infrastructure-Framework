@@ -64,9 +64,9 @@ int main(void) {
    */
 
   VMODULE_GET_MODULE_REF(SimpleWebserver).init();
-  VMODULE_GET_MODULE_REF(SimpleWebserver).start();
-
   VMODULE_GET_MODULE_REF(BlinkingLight).init();
+
+  VMODULE_GET_MODULE_REF(SimpleWebserver).start();
   VMODULE_GET_MODULE_REF(BlinkingLight).start();
 
   /*
