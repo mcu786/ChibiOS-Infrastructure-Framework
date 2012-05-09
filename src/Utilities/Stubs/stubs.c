@@ -53,3 +53,14 @@ void __cxa_guard_abort(__guard *g) {
   chSysUnlock();
 }
 
+
+
+int __register_exitproc(int type, void (*fn) (void), void *arg, void *d) {
+  (void) type;
+  (void) fn;
+  (void) arg;
+  (void) d;
+
+
+  return 0;
+}
