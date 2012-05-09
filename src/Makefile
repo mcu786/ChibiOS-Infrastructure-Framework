@@ -215,3 +215,21 @@ ifeq ($(USE_FWLIB),yes)
 endif
 
 include $(CHIBIOS)/os/ports/GCC/ARMCMx/rules.mk
+
+# Make all hook:
+# - Print RAM infos
+#
+MAKE_ALL_RULE_HOOK: ram
+
+ram: build/$(PROJECT).elf
+
+	@echo
+	@echo "Worst memory offenders outside of Externals/ are:"
+	@arm-none-eabi-nm -C --size-sort -t decimal -l build/$(PROJECT).elf  | grep -v "Externals/" | tail -n 10
+	
+	@echo
+	@echo 
+	@echo "Overall RAM usage statistics:"
+	@./Utilities/msc/res_usage.sh build/$(PROJECT).map
+	
+
