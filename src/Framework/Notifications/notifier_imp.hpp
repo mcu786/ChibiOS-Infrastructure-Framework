@@ -28,6 +28,9 @@ void NotifierMsg<MsgType>::tryFree() {
   chSysUnlock();
 
   if(cntr == 0) {
+    // Invoke destructor explicitly
+    this->~NotifierMsg<MsgType>();
+
     mailDelete(mailPool, (void*) this);
   }
 };
@@ -51,24 +54,22 @@ void Notifier<MsgType>::unregisterListener(Listener<MsgType>& listener){
 }
 
 template <class MsgType>
-msg_t Notifier<MsgType>::broadcast(const MsgType& msg){
+NotifierMsg<MsgType>* Notifier<MsgType>::acquireMsg(systime_t timeout){
 
-  // If there is no listener -> skip all the stuff
-  if(listenersList.empty())
-    return RDY_OK;
-
-  NotifierMsg<MsgType>* msgCopy = (NotifierMsg<MsgType>*) mailCreate(&mailPool, TIME_IMMEDIATE);
+  NotifierMsg<MsgType>* msgCopy = (NotifierMsg<MsgType>*) mailCreate(&mailPool, timeout);
 
   // Out of pool memory
   if(!msgCopy)
-    return RDY_RESET;
+    return 0;
 
+  // Call init
   msgCopy->init();
 
-  // Assign message to new copy of object
-  msgCopy->msg = msg;
-
   msgCopy->mailPool = &mailPool;
+}
+
+template <class MsgType>
+msg_t Notifier<MsgType>::broadcastMsg(NotifierMsg<MsgType>* msg){
 
   msg_t errorState = RDY_OK;
 
@@ -78,10 +79,10 @@ msg_t Notifier<MsgType>::broadcast(const MsgType& msg){
     Listener<MsgType>* listener = n->get();
 
     chSysLock();
-    msg_t err = chMBPostI(&listener->mailbox, (msg_t) msgCopy);
+    msg_t err = chMBPostI(&listener->mailbox, (msg_t) msg);
 
     if (err == RDY_OK){
-      msgCopy->usedCntr++;
+      msg->usedCntr++;
     } else {
       errorState = RDY_RESET;
     }
@@ -90,6 +91,27 @@ msg_t Notifier<MsgType>::broadcast(const MsgType& msg){
   }
 
   return errorState;
+
+}
+
+template <class MsgType>
+msg_t Notifier<MsgType>::broadcast(const MsgType& msg){
+
+  // If there is no listener -> skip all the stuff
+  if(listenersList.empty())
+    return RDY_OK;
+
+  NotifierMsg<MsgType>* msgCopy = acquireMsg(TIME_IMMEDIATE);
+
+  // Out of pool memory
+  if(!msgCopy)
+    return RDY_RESET;
+
+  // Assign message to new copy of object
+  msgCopy->msg = msg;
+
+  return broadcastMsg(msgCopy);
+
 }
 
 template<class MsgType, int N>

@@ -96,7 +96,7 @@ public:
   /**
    * @brief Broadcast message to registered @p Listener.
    *
-   * @note The broadcast is guaranteed to NOT block. Blocking can either occur
+   * @note The broadcast is guaranteed to NOT block. Errors can either occur
    *       the @p Notifier message pool is exhausted or if the mail box of a
    *       @p Listener is full.
    *
@@ -105,6 +105,23 @@ public:
    * @return RDY_RESET  If at least one @p Listener got no message
    */
   msg_t broadcast(const MsgType& msg);
+
+  /**
+   * @brief Acquire a @p NotifierMsg which can be transmitted with
+   *        @p broadcastMsg.
+   * @param timeout     Timeout for memory allocation.
+   * @return            Pointer to allocated @p NotifierMsg.
+   */
+  NotifierMsg<MsgType>* acquireMsg(systime_t timeout);
+
+  /**
+   * @brief Broadcast @p NotifierMsg to registered @p Listener.
+   * @param[in] msg     @p NotifierMsg
+   *
+   * @return RDY_OK     If all @p Listener were notified.
+   * @return RDY_RESET  If at least one @p Listener got no message
+   */
+  msg_t broadcastMsg(NotifierMsg<MsgType>* msg);
 
   /**
    * @brief Register a @p Listener to the Notifier
