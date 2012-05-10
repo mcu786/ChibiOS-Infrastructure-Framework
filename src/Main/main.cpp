@@ -83,6 +83,8 @@ int main(void) {
   a = 321;
   notifier.broadcast(a);
 
+  chDbgAssert(listener.getSize() == 2, "bad message count", "");
+
   int b;
   b = *listener.getData();
   listener.releaseData();

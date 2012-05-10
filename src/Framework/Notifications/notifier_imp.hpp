@@ -107,6 +107,15 @@ Listener<MsgType>::Listener(msg_t *buf, cnt_t n) :
 }
 
 template <class MsgType>
+int Listener<MsgType>::getSize(){
+  chSysLock();
+  const int useCount = chMBGetUsedCountI(&mailbox);
+  chSysUnlock();
+
+  return useCount;
+}
+
+template <class MsgType>
 const MsgType* Listener<MsgType>::getData(){
   NotifierMsg<MsgType>* msg;
 
