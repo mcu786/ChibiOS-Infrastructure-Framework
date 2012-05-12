@@ -69,7 +69,9 @@ NotifierMsg<MsgType>* Notifier<MsgType>::acquireMsg(systime_t timeout){
 }
 
 template <class MsgType>
-msg_t Notifier<MsgType>::broadcastMsg(NotifierMsg<MsgType>* msg){
+msg_t Notifier<MsgType>::broadcastMsg(NotifierMsg<MsgType>* msg,
+                                          systime_t timeout){
+
 
   msg_t errorState = RDY_OK;
 
@@ -79,13 +81,15 @@ msg_t Notifier<MsgType>::broadcastMsg(NotifierMsg<MsgType>* msg){
     Listener<MsgType>* listener = n->get();
 
     chSysLock();
-    msg_t err = chMBPostI(&listener->mailbox, (msg_t) msg);
 
-    if (err == RDY_OK){
+    msg_t rdymsg = chMBPostS(&listener->mailbox, (msg_t) msg, timeout);
+
+    if (rdymsg == RDY_OK){
       msg->usedCntr++;
     } else {
       errorState = RDY_RESET;
     }
+
     chSysUnlock()
 
   }
@@ -95,13 +99,13 @@ msg_t Notifier<MsgType>::broadcastMsg(NotifierMsg<MsgType>* msg){
 }
 
 template <class MsgType>
-msg_t Notifier<MsgType>::broadcast(const MsgType& msg){
+msg_t Notifier<MsgType>::broadcast(const MsgType& msg, systime_t timeout){
 
   // If there is no listener -> skip all the stuff
   if(listenersList.empty())
     return RDY_OK;
 
-  NotifierMsg<MsgType>* msgCopy = acquireMsg(TIME_IMMEDIATE);
+  NotifierMsg<MsgType>* msgCopy = acquireMsg(timeout);
 
   // Out of pool memory
   if(!msgCopy)
@@ -110,7 +114,7 @@ msg_t Notifier<MsgType>::broadcast(const MsgType& msg){
   // Assign message to new copy of object
   msgCopy->msg = msg;
 
-  return broadcastMsg(msgCopy);
+  return broadcastMsg(msgCopy, timeout);
 
 }
 
