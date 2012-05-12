@@ -28,7 +28,9 @@
 
 #include "Modules/BlinkingLight/blinkingLight.hpp"
 #include "Modules/SimpleWebserver/simpleWebserver.hpp"
+#include "Modules/SerialLogExporter/serialLogExporter.hpp"
 
+#include "Framework/Logging/logging.hpp"
 
 /*
  * Application entry point.
@@ -62,12 +64,17 @@ int main(void) {
    * TODO: Move module init to a specific place and make it more generic
    * TODO: Also check returned error codes
    */
-
   VMODULE_GET_MODULE_REF(SimpleWebserver).init();
   VMODULE_GET_MODULE_REF(BlinkingLight).init();
+  VMODULE_GET_MODULE_REF(SerialLogExporter).init();
 
   VMODULE_GET_MODULE_REF(SimpleWebserver).start();
   VMODULE_GET_MODULE_REF(BlinkingLight).start();
+  VMODULE_GET_MODULE_REF(SerialLogExporter).start();
+
+
+  logger.log(fwk::LoggingMsg::eInfo, "Test1", fwk::LoggingMsg::eNoCopy);
+  logger.log(fwk::LoggingMsg::eInfo, "Test2", fwk::LoggingMsg::eCopy);
 
   /*
    * Some basic testing of notifiers.
@@ -78,10 +85,10 @@ int main(void) {
   notifier.registerListener(listener);
 
   int a = 123;
-  notifier.broadcast(a);
+  notifier.broadcast(a, TIME_IMMEDIATE);
 
   a = 321;
-  notifier.broadcast(a);
+  notifier.broadcast(a, TIME_IMMEDIATE);
 
   chDbgAssert(listener.getSize() == 2, "bad message count", "");
 
