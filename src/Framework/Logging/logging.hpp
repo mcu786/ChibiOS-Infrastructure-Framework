@@ -18,7 +18,7 @@ namespace fwk {
 
 
 struct LoggingMsg {
-  enum LogLevel {eInfo, eDebug, eError, eHalt};
+  enum LogLevel {eDebug, eInfo, eError, eHalt};
   enum LogMsgType {eCopy, eNoCopy};
 
   LogLevel level;
@@ -39,22 +39,46 @@ template<int NLogListener, int LogBufferSize>
 class Logging {
 
 public:
-  Logging() {
+  Logging() : mtx(_MUTEX_DATA(mtx)), minimalLogLevel(LoggingMsg::eInfo){
     chHeapInit(&logBufferHeap, &logBuffer, logBufferSize);
   }
 
+  /**
+   * @brief     Send a debug message to the listening loggers.
+   *
+   * @details   Only messages which exceed or are equal to the minimal log
+   *            level are promoted to the loggers.
+   *
+   * @param level   Log level of the message.
+   * @param msg     \0 teminated message.
+   * @param type    Type of the message i.e. if it needs to be copied.
+   * @return
+   */
   int log(LoggingMsg::LogLevel level, const char* msg, LoggingMsg::LogMsgType type);
 
+  /**
+   * @brief Get the minimal log level.
+   * @return        Minimal log level.
+   */
+  LoggingMsg::LogLevel getMinimalLogLevel();
+
+  /**
+   * @brief Set the minimal log level,
+   * @param minimalLogLevel Minimal log level to be set
+   */
+  void setMinimalLogLevel(LoggingMsg::LogLevel minimalLogLevel);
 
 public:
-  fwk::StaticNotifier<LoggingMsg, NLogListener> notifier;
+  fwk::StaticNotifier<LoggingMsg,NLogListener> notifier;
 
 private:
+  Mutex mtx;    // Protection of member variables
+
+  LoggingMsg::LogLevel minimalLogLevel;
 
   static const size_t logBufferSize = MEM_ALIGN_NEXT(LogBufferSize);
   char logBuffer[logBufferSize] __attribute__((aligned(sizeof(stkalign_t))));
   MemoryHeap logBufferHeap;
-
 };
 
 
@@ -63,6 +87,9 @@ template<int NLogListener, int LogBufferSize>
 int Logging<NLogListener,LogBufferSize>::log(LoggingMsg::LogLevel level,
                                                    const char* msg,
                                                    LoggingMsg::LogMsgType type){
+
+  if (level < getMinimalLogLevel())
+    return 0;
 
   NotifierMsg<LoggingMsg>* notificMsg;
   notificMsg = notifier.acquireMsg(TIME_INFINITE);
@@ -93,6 +120,23 @@ int Logging<NLogListener,LogBufferSize>::log(LoggingMsg::LogLevel level,
 
   return 0;
 
+}
+
+template<int NLogListener, int LogBufferSize>
+void Logging<NLogListener,LogBufferSize>::setMinimalLogLevel(LoggingMsg::LogLevel minimalLogLevel) {
+  chMtxLock(&mtx);
+  this->minimalLogLevel = minimalLogLevel;
+  chMtxUnlock();
+}
+
+template<int NLogListener, int LogBufferSize>
+LoggingMsg::LogLevel Logging<NLogListener,LogBufferSize>::getMinimalLogLevel() {
+
+  chMtxLock(&mtx);
+  LoggingMsg::LogLevel tmp = minimalLogLevel;
+  chMtxUnlock();
+
+  return tmp;
 }
 
 

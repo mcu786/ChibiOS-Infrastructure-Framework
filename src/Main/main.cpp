@@ -74,7 +74,7 @@ int main(void) {
 
 
   logger.log(fwk::LoggingMsg::eInfo, "Test1", fwk::LoggingMsg::eNoCopy);
-  logger.log(fwk::LoggingMsg::eInfo, "Test2", fwk::LoggingMsg::eCopy);
+  logger.log(fwk::LoggingMsg::eDebug, "Test2", fwk::LoggingMsg::eCopy);
 
   /*
    * Some basic testing of notifiers.
