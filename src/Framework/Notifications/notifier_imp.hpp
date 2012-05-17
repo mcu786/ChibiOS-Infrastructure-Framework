@@ -64,8 +64,9 @@ NotifierMsg<MsgType>* Notifier<MsgType>::acquireMsg(systime_t timeout){
 
   // Call init
   msgCopy->init();
-
   msgCopy->mailPool = &mailPool;
+
+  return msgCopy;
 }
 
 template <class MsgType>
