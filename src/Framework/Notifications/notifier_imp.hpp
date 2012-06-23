@@ -17,7 +17,7 @@ using namespace fwk;
 template <class MsgType>
 void NotifierMsg<MsgType>::init() {
   usedCntr = 0;
-};
+}
 
 template <class MsgType>
 void NotifierMsg<MsgType>::tryFree() {
@@ -33,7 +33,7 @@ void NotifierMsg<MsgType>::tryFree() {
 
     mailDelete(mailPool, (void*) this);
   }
-};
+}
 
 
 template <class MsgType>
