@@ -93,6 +93,8 @@ int main(void) {
   chDbgAssert(listener.getSize() == 2, "bad message count", "");
 
   int b;
+  (void) b;
+
   b = *listener.getData();
   listener.releaseData();
 
