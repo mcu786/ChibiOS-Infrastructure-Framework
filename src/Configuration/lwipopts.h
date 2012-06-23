@@ -1028,7 +1028,7 @@
  *     LWIP_CALLBACK_API==1: The PCB callback function is called directly
  *         for the event.
  */
-//#define LWIP_EVENT_API
+/* #define LWIP_EVENT_API */
 
 /*
    ----------------------------------
