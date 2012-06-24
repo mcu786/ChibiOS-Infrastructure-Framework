@@ -59,17 +59,23 @@ PROJECT = ch
 
 # Imported source files and paths
 CHIBIOS = Externals/ChibiOS
-include $(CHIBIOS)/boards/OLIMEX_STM32_P107/board.mk
-include $(CHIBIOS)/os/hal/platforms/STM32F1xx/platform.mk
+
+# Define default target system
+ifeq ($(TARGET),)
+  TARGET = OLIMEX_STM32_P107_REVA
+endif
+
+# Include the target configuration which should set
+# - LDSCRIPT
+# - MCU
+# - Include all required platform and port makefiles
+include Targets/$(TARGET)/board.mk
+
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/ports/GCC/ARMCMx/STM32F1xx/port.mk
 include $(CHIBIOS)/os/kernel/kernel.mk
 include $(CHIBIOS)/test/test.mk
 
 include Framework/Network/lwip_bindings/lwip.mk
-
-# Define linker script file here
-LDSCRIPT= $(PORTLD)/STM32F107xC.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -128,8 +134,6 @@ include Modules/modules.mk
 ##############################################################################
 # Compiler settings
 #
-
-MCU  = cortex-m3
 
 #TRGT = arm-elf-
 TRGT = arm-none-eabi-
@@ -207,6 +211,14 @@ ULIBS =
 #
 # End of user defines
 ##############################################################################
+
+ifeq ($(USE_FPU),yes)
+  USE_OPT += -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -fsingle-precision-constant
+  DDEFS += -DCORTEX_USE_FPU=TRUE
+else
+  DDEFS += -DCORTEX_USE_FPU=FALSE
+endif
+
 
 ifeq ($(USE_FWLIB),yes)
   include $(CHIBIOS)/ext/stm32lib/stm32lib.mk

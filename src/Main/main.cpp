@@ -48,9 +48,9 @@ int main(void) {
   chSysInit();
 
   /*
-   * Activates the serial driver 3 using the driver default configuration.
+   * Activates the serial driver using the driver default configuration.
    */
-  sdStart(&SD3, NULL);
+  sdStart(&SERIAL_TERMINAL, NULL);
 
   /*
    * Creates the LWIP threads (it changes priority internally).
@@ -108,8 +108,8 @@ int main(void) {
    * sleeping in a loop and check the button state.
    */
   while (TRUE) {
-    if (palReadPad(GPIOC, GPIOC_SWITCH_TAMPER) == 0)
-      TestThread(&SD3);
+    if (palReadPad(SWITCH_TAMPER_PORT, SWITCH_TAMPER_PIN) == 0)
+      TestThread(&SERIAL_TERMINAL);
     chThdSleepMilliseconds(500);
   }
 }

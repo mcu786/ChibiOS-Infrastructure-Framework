@@ -12,7 +12,7 @@
  * @brief   Output port for serial log messages
  */
 #if !defined(FWK_LOG_SERIAL_OUT) || defined(__DOXYGEN__)
-#define FWK_LOG_SERIAL_OUT              SD3
+#define FWK_LOG_SERIAL_OUT              SERIAL_TERMINAL
 #endif
 
 

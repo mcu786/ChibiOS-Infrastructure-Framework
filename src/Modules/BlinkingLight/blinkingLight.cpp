@@ -15,9 +15,9 @@ msg_t BlinkingLight::Main(){
 
   chRegSetThreadName("blinker");
   while (TRUE) {
-    palClearPad(GPIOC, GPIOC_LED_STATUS1);
+    palClearPad(LED_STATUS1_PORT, LED_STATUS1_PIN);
     chThdSleepMilliseconds(500);
-    palSetPad(GPIOC, GPIOC_LED_STATUS1);
+    palSetPad(LED_STATUS1_PORT, LED_STATUS1_PIN);
     chThdSleepMilliseconds(500);
   }
 
