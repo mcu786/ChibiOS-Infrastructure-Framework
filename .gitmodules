@@ -4,3 +4,6 @@
 [submodule "src/Externals/lwip"]
 	path = src/Externals/lwip
 	url = git://git.savannah.nongnu.org/lwip.git
+[submodule "src/Externals/ChibiosFatFSWorkerWrapper"]
+	path = src/Externals/ChibiosFatFSWorkerWrapper
+	url = git@github.com:mabl/ChibiosFatFSWorkerWrapper.git
