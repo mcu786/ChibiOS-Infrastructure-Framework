@@ -8,7 +8,7 @@
 namespace SerialLogExporter{
 
   /**
-   * @brief Example module implementing a blinking light
+   * @brief Simple exporter for log notifications to the serial console
    *
    * @pre This module does not depend on any other module
    */

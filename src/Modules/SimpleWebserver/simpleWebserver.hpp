@@ -18,7 +18,7 @@
 namespace SimpleWebserver {
 
   /**
-   * @brief Example module implementing a blinking light
+   * @brief Example implementation of the standard minimal LwIP HTTP server.
    *
    * @pre This module does not depend on any other module
    */

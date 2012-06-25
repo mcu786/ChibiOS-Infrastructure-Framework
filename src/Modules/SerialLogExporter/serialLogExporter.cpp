@@ -10,7 +10,8 @@
 namespace SerialLogExporter {
 
 msg_t SerialLogExporter::init(){
-  fwk::logger.notifier.registerListener(listener);
+  /* Register this listener to the log notifier. */
+  fwk::logger.notifier.registerListener(this->listener);
 
   return RDY_OK;
 }
@@ -22,6 +23,7 @@ msg_t SerialLogExporter::Main(){
   while (true){
     const fwk::LoggingMsg* msg = listener.getData();
 
+    /* Print [errorlevel] message first. */
     switch (msg->level) {
 
       case fwk::LoggingMsg::eDebug:
@@ -41,13 +43,13 @@ msg_t SerialLogExporter::Main(){
         break;
     }
 
+    /* Write out error message and terminate with newline. */
     chSequentialStreamWrite(&FWK_LOG_SERIAL_OUT, (const uint8_t *) msg->msg,
                             strlen(msg->msg));
-
     chSequentialStreamWrite(&FWK_LOG_SERIAL_OUT, (const uint8_t *)"\r\n", 2);
 
+    /* Release the message we got when we called with listener.getData() */
     listener.releaseData();
-
   }
 
   return RDY_OK;

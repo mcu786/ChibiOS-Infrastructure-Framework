@@ -210,9 +210,13 @@ public:
   const MsgType* getData();
 
   /**
-   * @brief Release the last received message.
+   * @brief   Release the last received message.
    *
-   * @pre You first have to get the message with @p getData.
+   * @details The message is freed once all notified listeners have released
+   *          the data. Upon freeing the message, the destructor of the message
+   *          is also called.
+   *
+   * @pre     You first have to get the message with @p getData.
    * @warning Attempts to release a message without having called @p getData()
    *          is illegal.
    */

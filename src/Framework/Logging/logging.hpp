@@ -16,8 +16,15 @@
 namespace fwk {
 
 
-
+/**
+ * @brief   @p LoggingMsg is used to carry the log message details via the
+ *          Notification framework.
+ *
+ */
 struct LoggingMsg {
+  /**
+   * @brief Logging message error level.
+   */
   enum LogLevel {eDebug, eInfo, eError, eHalt};
   enum LogMsgType {eCopy, eNoCopy};
 
